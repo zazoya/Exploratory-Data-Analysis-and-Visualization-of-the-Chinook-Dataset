@@ -1,0 +1,79 @@
+the first question code
+-----------------------
+with t1 as ( SELECT c.Country , ar.Name as Artist_Name , sum(i.total) as Total_sales
+FROM Track AS t
+JOIN Album as a
+on a.AlbumId = t.AlbumId
+JOIN Artist as ar
+on ar.ArtistId = a.ArtistId
+JOIN InvoiceLine as il
+on il.TrackId = t.TrackId
+JOIN Invoice as i
+on i.InvoiceId = il.InvoiceId
+JOIN Customer as c
+on c.CustomerId = i.CustomerId
+group by 1 ,2)
+
+SELECT Country || ' - '|| Artist_Name as ca , max(Total_sales)
+FROM t1
+group by Country
+---------------------------------------------------------------------------------------------
+the second question code
+------------------------
+with t1 as (SELECT
+    CASE STRFTIME('%w', i.InvoiceDate)
+        WHEN '0' THEN 'Sunday'
+        WHEN '1' THEN 'Monday'
+        WHEN '2' THEN 'Tuesday'
+        WHEN '3' THEN 'Wednesday'
+        WHEN '4' THEN 'Thursday'
+        WHEN '5' THEN 'Friday'
+        WHEN '6' THEN 'Saturday'
+    END AS day_name , g.Name, count(*) as cnt
+FROM Track AS t
+JOIN InvoiceLine as il
+on il.TrackId = t.TrackId
+JOIN Invoice as i
+on i.InvoiceId = il.InvoiceId
+JOIN Genre as g
+on g.GenreId = t.GenreId
+GROUP by 1,2
+)
+
+SELECT t1.day_name , t1.Name ,sum(cnt) , max(cnt) 
+from t1
+GROUP by 1 
+----------------------------------------------------------------------------------------------
+the third question code
+------------------------
+with t1 as(SELECT  a.Title ,ar.Name, il.InvoiceId 
+FROM Track AS t
+JOIN Album as a
+on a.AlbumId = t.AlbumId
+JOIN Artist as ar
+on ar.ArtistId = a.ArtistId
+JOIN InvoiceLine as il
+on il.TrackId = t.TrackId)
+
+SELECT t1.Title, t1.Name , count(*) AS sales_of_sold_tracks_from_each_album
+FROM t1
+GROUP by 1
+ORDER by 3 DESC
+Limit 10
+----------------------------------------------------------------------------------------------
+the fourth question code
+--------------------------
+with t1 as(SELECT i.BillingCountry, g.Name, il.InvoiceId 
+FROM Track AS t
+JOIN InvoiceLine as il
+on il.TrackId = t.TrackId
+JOIN Invoice as i
+on i.InvoiceId = il.InvoiceId
+JOIN Genre as g
+on g.GenreId = t.GenreId)
+
+SELECT t1.BillingCountry , t1.Name , Count(*)
+FROM t1
+GROUP by 1
+ORDER by 3 DESC
+
